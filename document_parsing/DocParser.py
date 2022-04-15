@@ -1,4 +1,4 @@
-
+import os
 import json
 from nltk.stem.porter import PorterStemmer
 
@@ -22,7 +22,7 @@ class DocParser:
 		json_body_sections = data['body_text']
 		for json_sec in json_body_sections:
 			json_body_sec_text = json_sec['text']
-			text_secs.append(json_body_sec_text.strip())
+			text_secs.append(json_body_sec_text.strip() + " ")
 		content = "".join(text_secs)
 		return content 
 
@@ -41,7 +41,7 @@ class DocParser:
 				new_clean_content.append(self.stemmer.stem(term))
 				new_clean_content.append(' ')
 			clean_content = ''.join(new_clean_content)
-		print(clean_content)
+		#print(clean_content)
 		return clean_content
 
 	# This is going to be a main function for experimentation
@@ -77,6 +77,22 @@ class DocParser:
 		# TO DO
 		pass
 
-doc_name = '00a0df94d685622b8a7894f6a952e97a7e89ccf6.json'
+#doc_name = '00a0df94d685622b8a7894f6a952e97a7e89ccf6.json'
 parser = DocParser()
-parser.parse_doc(doc_name)
+#parser.parse_doc(doc_name)
+
+# Here is code to generate single doc file
+with open('all_docs.txt', 'w') as all_file:
+    counter = 0
+    for f in os.listdir('./random_document_parses_10000/'):
+        doc_name = f
+        content = parser.parse_doc('./random_document_parses_10000/' + str(doc_name))
+        all_file.write(f)
+        all_file.write('\n')
+        all_file.write(content[1])
+        all_file.write('\n')
+        #print(f)
+        #print(content)
+        print(counter)
+        counter = counter + 1
+
