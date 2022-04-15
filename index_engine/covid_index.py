@@ -17,13 +17,13 @@ def WriteIndex(type):
             break
         indexWriter.index(doc[0], doc[1])
         count+=1
-        if count%30000==0:
+        if count%1000==0:
             print("finish ", count," docs")
     print("totally finish ", count, " docs")
     indexWriter.close()
     return
 
-# IMPORTANT - MAKE THIS SAME AS DOC TO DO
+# IMPORTANT - MAKE THIS SAME AS DOC PARSER - TO DO
 def clean_content(term, make_lowercase=True, stem=True, remove_nonalpha=True):   # Removing nonalphanumeric chars may not be good if symbols are of value
         stemmer = PorterStemmer()
         clean_content = term
@@ -50,7 +50,7 @@ def ReadIndex(type, token):
             print(docNo+"\t"+str(docId)+"\t"+str(posting[docId]))
 
 startTime = datetime.datetime.now()
-#WriteIndex("trectext")
+WriteIndex("trectext")
 endTime = datetime.datetime.now()
 print ("index web corpus running time: ", endTime - startTime)
 startTime = datetime.datetime.now()
