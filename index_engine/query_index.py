@@ -47,6 +47,7 @@ clean = clean_content(q)
 query = set_query(clean)
 
 if (model == "Boolean"):
+    limit = int(input("How many documents would you like returned? "))
     search = QueryRetreivalModelBoolean.QueryRetrievalModelBoolean(index)
     results = search.retrieveQuery(query, 20)
     rank = 1
@@ -54,7 +55,7 @@ if (model == "Boolean"):
         print(query.getTopicId(), " Q0 ", result.getDocNo(),
               ' ', rank, " ", " MYRUN",)
         rank += 1
-        if (rank == 21):
+        if (rank == limit):
             break
 
 else:
