@@ -28,7 +28,7 @@ class QueryRetrievalModelBoolean:
     def retrieveQuery(self, query, topN):
         query_input = self.query_parser.parse(query.getQueryContent())
         search_results = self.searcher.search(
-            query_input, scored=False, limit=topN)
+            query_input, scored=False, sortedby=None, limit=topN)
         # search_results = self.searcher.boolean_context()
         return_docs = []
         for result in search_results:
