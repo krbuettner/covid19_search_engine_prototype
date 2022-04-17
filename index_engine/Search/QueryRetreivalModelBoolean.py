@@ -25,18 +25,27 @@ class QueryRetrievalModelBoolean:
     # You will find our IndexingLucene.Myindexreader provides method: docLength().
     # Returned documents should be a list of Document.
 
-    def retrieveQuery(self, query, topN):
-        query_input = self.query_parser.parse(query.getQueryContent())
+    def retrieveQuery(self, query):
+        corrector = self.searcher.corrector("doc_content")
+        q = self.query_parser.parse(query.getQueryContent())
+
+        corrected = self.searcher.correct_query(q, query.getQueryContent())
+        if corrected.query != q:
+            print("Did you mean:", corrected.string)
+
+        query_input = self.query_parser.parse(corrected.string)
         search_results = self.searcher.search(
-            query_input, scored=False, sortedby=None, limit=topN)
+            query_input, scored=False, sortedby=None)
         # search_results = self.searcher.boolean_context()
         return_docs = []
         for result in search_results:
             # print(self.searcher.stored_fields(result.docnum))
             a_doc = Document.Document()
             a_doc.setDocId(result.docnum)
+            # print(result.highlights("doc_content"))
+            # print()
             a_doc.setDocNo(self.searcher.stored_fields(
                 result.docnum)["doc_no"])
-            a_doc.setScore(result.score)
+
             return_docs.append(a_doc)
         return return_docs
