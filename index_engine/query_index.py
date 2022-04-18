@@ -1,7 +1,6 @@
 import IndexingWithWhoosh.MyIndexReader as MyIndexReader
-import SearchWithWhoosh.QueryRetreivalModel as QueryRetreivalModel
-import SearchWithWhoosh.QueryRetreivalModelBoolean as QueryRetreivalModelBoolean
-import SearchWithWhoosh.ExtractQuery as ExtractQuery
+import Search.QueryRetreivalModel as QueryRetreivalModel
+import Search.QueryRetreivalModelBoolean as QueryRetreivalModelBoolean
 import Classes.Query as Query
 from nltk.stem.porter import PorterStemmer
 import datetime
