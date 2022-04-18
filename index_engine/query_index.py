@@ -9,19 +9,21 @@ import datetime
 
 
 def clean_content(query, make_lowercase=True, stem=True, remove_nonalpha=True):
+    bool_ops = ['AND', 'OR', 'NOT', 'ANDNOT', 'ANDMAYBE']
     stemmer = PorterStemmer()
     query_list = query.split()
     clean_string = ''
 
     for term in query_list:
-        a = term
-        if make_lowercase:
-            a = term.lower()
-        if stem:
-            a = stemmer.stem(a)
-        if remove_nonalpha:
-            a = ''.join(filter(str.isalnum, a))
-        clean_string += a + ' '
+        if (term not in bool_ops):
+            a = term
+            if make_lowercase:
+                a = term.lower()
+            if stem:
+                a = stemmer.stem(a)
+            if remove_nonalpha:
+                a = ''.join(filter(str.isalnum, a))
+            clean_string += a + ' '
 
     return clean_string
 
@@ -43,18 +45,19 @@ index = MyIndexReader.MyIndexReader("trectext")
 model = input("Boolean or BM25? ")
 q = get_query()
 clean = clean_content(q)
-query = set_query(clean)
+query = set_query(q)
 
 if (model == "Boolean"):
     limit = int(input("How many documents would you like returned? "))
     search = QueryRetreivalModelBoolean.QueryRetrievalModelBoolean(index)
-    results = search.retrieveQuery(query, 20)
+
+    results = search.retrieveQuery(query)
     rank = 1
     for result in results:
         print(query.getTopicId(), " Q0 ", result.getDocNo(),
-              ' ', rank, " ", " MYRUN",)
+              " ", " MYRUN",)
         rank += 1
-        if (rank == limit):
+        if (rank == limit+1):
             break
 
 else:
@@ -65,3 +68,4 @@ else:
         print(query.getTopicId(), " Q0 ", result.getDocNo(),
               ' ', rank, " ", result.getScore(), " MYRUN",)
         rank += 1
+
