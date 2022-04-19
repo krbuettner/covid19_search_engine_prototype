@@ -203,7 +203,7 @@ def run_gui():
     frame.place(anchor='center', relx=0.5, rely=0.25)
 
     # Create an object of tkinter ImageTk
-    img = Image.open("gui/image.png")
+    img = Image.open("image.png")
     img = img.resize((200, 200))
     img = ImageTk.PhotoImage(img)
 
