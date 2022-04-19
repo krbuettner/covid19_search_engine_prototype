@@ -45,7 +45,7 @@ index = MyIndexReader.MyIndexReader("trectext")
 model = input("Boolean or BM25? ")
 q = get_query()
 clean = clean_content(q)
-query = set_query(q)
+query = set_query(clean)
 
 if (model == "Boolean"):
     limit = int(input("How many documents would you like returned? "))
