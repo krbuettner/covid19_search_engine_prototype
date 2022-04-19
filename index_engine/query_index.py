@@ -15,6 +15,7 @@ def clean_content(query, make_lowercase=True, stem=True, remove_nonalpha=True):
     clean_string = ''
 
     for term in query_list:
+
         if (term not in bool_ops):
             a = term
             if make_lowercase:
@@ -24,7 +25,8 @@ def clean_content(query, make_lowercase=True, stem=True, remove_nonalpha=True):
             if remove_nonalpha:
                 a = ''.join(filter(str.isalnum, a))
             clean_string += a + ' '
-
+        else:
+            clean_string += term + ' '
     return clean_string
 
 
@@ -50,7 +52,7 @@ query = set_query(clean)
 if (model == "Boolean"):
     limit = int(input("How many documents would you like returned? "))
     search = QueryRetreivalModelBoolean.QueryRetrievalModelBoolean(index)
-
+    print("Your Query is " + query.getQueryContent())
     results = search.retrieveQuery(query)
     rank = 1
     for result in results:
@@ -68,4 +70,3 @@ else:
         print(query.getTopicId(), " Q0 ", result.getDocNo(),
               ' ', rank, " ", result.getScore(), " MYRUN",)
         rank += 1
-
