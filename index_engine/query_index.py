@@ -12,11 +12,12 @@ from PIL import Image,ImageTk
 import webbrowser
 import webview # pip install pywebview
 import pickle
+import tkinter
 
 # Command line arguments for program
 write_index = False
 num_exact_matches = 10
-num_ranked_matches = 5
+num_ranked_matches = 10
 
 ###################################################################################################################################
 # Code to build index if needed
@@ -88,7 +89,8 @@ def callback(title, url):
 
 # This is main functionality that calls Boolean or language models
 def searchQuery(query, model_type):
-    print(query, model_type)
+
+    orig_query = query
 
     # Create index reader
     index_reader = MyIndexReader.MyIndexReader("trectext")
@@ -133,36 +135,61 @@ def searchQuery(query, model_type):
             docs.append(id_to_url[i])
 
     # Show results based on docs retrieved
-    showResults(docs)
+    showResults(docs, doc_list, orig_query)
+
+
 
 
 # This is second window
-def showResults(docs):
+def showResults(docs, doc_list, query):
+
+    # This gets doc_surrogates from this "orig" file
+    # I took introduction paragraphs and stored them in file
+    # We can always change
+    doc_surr_dict = dict()
+    with open('data/all_docs_orig.txt', 'r', newline='', encoding="utf8") as f:
+        lines = f.readlines()
+        counter = 0
+        while counter < len(lines):
+            doc_surr_dict[lines[counter].strip()] = lines[counter + 1].strip()
+            counter = counter + 2
+   
+    # This is setting up window with scrollbar
     rule_window = Toplevel(top)
     window_height = 500
-    window_width = 900
-
+    window_width = 1100
     screen_width = top.winfo_screenwidth()
     screen_height = top.winfo_screenheight()
-
     x_cordinate = int((screen_width/2) - (window_width/2))
     y_cordinate = int((screen_height/2) - (window_height/2))
-
     rule_window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
-    
     rule_window.title("Search Results")
+    main_frame = Frame(rule_window)
+    main_frame.pack(fill=BOTH, expand=1)
+    my_canvas = Canvas(main_frame)
+    my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+    my_scrollbar = tkinter.Scrollbar(main_frame, orient=VERTICAL, command=my_canvas.yview)
+    my_scrollbar.pack(side=RIGHT, fill=Y)
+    my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")) )
+    second_frame = Frame(my_canvas)
+    my_canvas.create_window((0,0), window=second_frame, anchor="nw")
 
+    # Add appropriate links and doc surrogates to screen
     links = []
-
-    dictionary_with_url_indices = dict()
-
+    doc_surrogates = []
+    search_label = Label(second_frame, text="Search: " + str(query), fg="green", cursor="hand2", font='Helvetica 12 bold', anchor= W)
+    search_label.pack(fill=X)
     for i in range(len(docs)):
-        links.append(Label(rule_window, text=docs[i][1], fg="blue", cursor="hand2", anchor= W))
+        links.append(Label(second_frame, text=docs[i][1], fg="blue", cursor="hand2", font='Helvetica 10 bold', anchor= W))
+        doc_surrogate_text = doc_surr_dict[doc_list[i] + '.json'][0:500]
+        doc_surrogates.append(Label(second_frame, text=doc_surrogate_text+"...", fg="black", cursor="hand2", anchor= W, justify=LEFT, wraplengt=500))
         links[i].pack(fill=X)
-        dictionary_with_url_indices[docs[i][1]] = docs[i][0]
+        doc_surrogates[i].pack(fill=X)
         def make_lambda(docs, i):
             return lambda e : callback(docs[i][1], docs[i][0])
         links[i].bind("<Button-1>", make_lambda(docs, i))
+
 
 # This is main function that sets up and runs GUI
 def run_gui():
