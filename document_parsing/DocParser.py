@@ -14,7 +14,7 @@ class DocParser:
 	def get_title(self, data):
 		return data["metadata"]["title"]
 
-	def get_content(self, data):
+	def get_content(self, data, just_intros=True):
 
 		# There are multiple sections such as 'metadata', 'abstract', 'body_text' - let's just start with body_text for simplicity
 		# Loop through each 'text' section, strip trailing and leading whitespace, then combine all strings at end to create content
@@ -22,7 +22,17 @@ class DocParser:
 		json_body_sections = data['body_text']
 		for json_sec in json_body_sections:
 			json_body_sec_text = json_sec['text']
-			text_secs.append(json_body_sec_text.strip() + " ")
+			if just_intros:
+				if json_sec['section'] == "Introduction":
+					text_secs.append(json_body_sec_text.strip() + " ")
+			else:
+				text_secs.append(json_body_sec_text.strip() + " ")
+		if just_intros:
+			if len(text_secs) == 0:
+				for json_sec in json_body_sections:
+					json_body_sec_text = json_sec['text']
+					text_secs.append(json_body_sec_text.strip() + " ")
+					break
 		content = "".join(text_secs)
 		return content 
 
@@ -49,7 +59,7 @@ class DocParser:
 	# e.g. Should we have abstract? should we perform stemming? lowercase? remove proper nouns?
 	# I think this will get edited a good bit 
 	# The output should be doc_id and content - need to map doc_ids to title 
-	def parse_doc(self, doc_name):
+	def parse_doc(self, doc_name, ignore_clean=True):
 
 		# Load JSON data for doc
 		with open(doc_name, 'r') as f:
@@ -64,7 +74,10 @@ class DocParser:
 		
 		# Get content, clean it, store it to doc id
 		content_uncleaned = self.get_content(data)
-		content_cleaned = self.clean_content(content_uncleaned)
+		if ignore_clean:
+			content_cleaned = content_uncleaned
+		else:
+			content_cleaned = self.clean_content(content_uncleaned)
 		self.ids_to_content[doc_id] = content_cleaned 							# Store info in master list
 
 		# Increment doc ids
@@ -72,17 +85,10 @@ class DocParser:
 
 		return [doc_id, content_cleaned]
 
-	# After looping through all docs, parsing them, will write all data to large file
-	def write_docs_to_large_file(self):
-		# TO DO
-		pass
-
-#doc_name = '00a0df94d685622b8a7894f6a952e97a7e89ccf6.json'
 parser = DocParser()
-#parser.parse_doc(doc_name)
 
 # Here is code to generate single doc file
-with open('all_docs.txt', 'w') as all_file:
+with open('all_docs_orig.txt', 'w') as all_file:
     counter = 0
     for f in os.listdir('./random_document_parses_10000/'):
         doc_name = f
