@@ -27,7 +27,7 @@ num_ranked_matches = 10
 def WriteIndex(type):
     count = 0
     # Initiate pre-processed collection file reader.
-    corpus =PreprocessedCorpusReader.PreprocessedCorpusReader(type)
+    corpus = PreprocessedCorpusReader.PreprocessedCorpusReader(type)
     # Initiate the index writer.
     indexWriter = MyIndexWriter.MyIndexWriter(type)
     # Build index of corpus document by document.
@@ -35,10 +35,11 @@ def WriteIndex(type):
         doc = corpus.nextDocument()
         if doc == None:
             break
-        indexWriter.index(doc[0], doc[1])
-        count+=1
-        if count%1000==0:
-            print("finish ", count," docs")
+
+        indexWriter.index(doc[0], doc[1], doc[2])
+        count += 1
+        if count % 1000 == 0:
+            print("finish ", count, " docs")
     print("totally finish ", count, " docs")
     indexWriter.close()
     return
