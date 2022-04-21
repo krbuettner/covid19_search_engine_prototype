@@ -208,7 +208,7 @@ def run_gui():
     top.wm_title("Covid-19 Search")
 
     # Entry Place
-    e1=Entry(top,bd=6,width=40, fg='grey')
+    e1=Entry(top,bd=6,width=40, fg='black')
     e1.insert(0, '')
     e1.place(relx=0.5, rely=0.6, anchor=CENTER)
     e1.focus()
