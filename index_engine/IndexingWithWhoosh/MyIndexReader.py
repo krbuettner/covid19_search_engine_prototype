@@ -23,6 +23,9 @@ class MyIndexReader:
     def getDocNo(self, docId):
         return self.searcher.stored_fields(docId)["doc_no"]
 
+    def getDocDate(self, docDate):
+        return self.searcher.stored_fields(docDate)["doc_date"]
+
     # Return DF.
     def DocFreq(self, token):
         results = self.searcher.search(Term("doc_content", token))
