@@ -8,7 +8,7 @@ IndexTextDir="data//indextext//"
 # address of generated Web index file.
 IndexWebDir="data//indexweb//"
 
-ResultHM1="data//docs_w_docs.txt"
+ResultHM1="data//docs_w_dates.txt"
 
 # Added topic directory
 TopicDir = "data//topics.txt"
