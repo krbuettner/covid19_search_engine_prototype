@@ -1,27 +1,30 @@
 import Classes.Path as Path
 from whoosh import index
-from whoosh.fields import Schema, TEXT, KEYWORD, ID, STORED
+from whoosh.fields import Schema, TEXT, KEYWORD, ID, STORED, DATETIME
 from whoosh.analysis import RegexTokenizer
 
 # Efficiency and memory cost should be paid with extra attention.
+
+
 class MyIndexWriter:
 
-    writer=[]
+    writer = []
 
     def __init__(self, type):
-        path_dir= Path.IndexTextDir
+        path_dir = Path.IndexTextDir
         # Schema includes fields of document (we use ID and doc_content)
-        schema = Schema(doc_no=ID(stored=True),
+        schema = Schema(doc_no=ID(stored=True), doc_date=DATETIME(stored=True, sortable=True),
                         doc_content=TEXT(analyzer=RegexTokenizer(), stored=True))
         indexing = index.create_in(path_dir, schema)
         self.writer = indexing.writer()
         return
 
     # This method build index for each document.
-	# NT: in your implementation of the index, you should transform your string docno into non-negative integer docids,
+        # NT: in your implementation of the index, you should transform your string docno into non-negative integer docids,
     # and in MyIndexReader, you should be able to request the integer docid for each docno.
-    def index(self, docNo, content):
-        self.writer.add_document(doc_no=docNo, doc_content=content)
+    def index(self, docNo, docDate, content):
+        self.writer.add_document(
+            doc_no=docNo, doc_date=docDate, doc_content=content)
         return
 
     # Close the index writer, and you should output all the buffered content (if any).
