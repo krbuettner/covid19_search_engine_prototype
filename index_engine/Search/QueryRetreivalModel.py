@@ -77,6 +77,7 @@ class QueryRetrievalModel:
             doc_i = Document.Document()
             doc_i.setDocId(idx[i])
             doc_i.setDocNo(self.indexReader.getDocNo(idx[i]))
+            doc_i.setDocDate(self.indexReader.getDocDate(idx[i]))
             doc_i.setScore(overall_query_probs[idx[i]])
             docs.append(doc_i)
 
