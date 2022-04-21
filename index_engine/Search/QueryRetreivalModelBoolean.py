@@ -35,17 +35,18 @@ class QueryRetrievalModelBoolean:
 
         query_input = self.query_parser.parse(corrected.string)
         search_results = self.searcher.search(
-            query_input, scored=False, sortedby=None)
-        # search_results = self.searcher.boolean_context()
+            query_input, scored=False, sortedby="doc_date", reverse=True)
+
         return_docs = []
         for result in search_results:
-            # print(self.searcher.stored_fields(result.docnum))
             a_doc = Document.Document()
             a_doc.setDocId(result.docnum)
-            # print(result.highlights("doc_content"))
-            # print()
+
             a_doc.setDocNo(self.searcher.stored_fields(
                 result.docnum)["doc_no"])
+
+            a_doc.setDocDate(self.searcher.stored_fields(
+                result.docnum)["doc_date"])
 
             return_docs.append(a_doc)
         return return_docs
