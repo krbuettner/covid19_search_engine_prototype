@@ -1,5 +1,7 @@
 ## Running the Search Engine
 
+Some files are needed for operation. Data is parsed from https://www.kaggle.com/datasets/allen-institute-for-ai/CORD-19-research-challenge. 
+
 To run example query for "covid19" on index run python covid_index.py
 Assuming that all_docs.txt and all_docs_orig.txt are in right path (data), this should create index
 
