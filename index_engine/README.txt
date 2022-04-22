@@ -1,3 +1,5 @@
+### Running the Search Engine
+
 To run example query for "covid19" on index run python covid_index.py
 Assuming that all_docs.txt and all_docs_orig.txt are in right path (data), this should create index
 
