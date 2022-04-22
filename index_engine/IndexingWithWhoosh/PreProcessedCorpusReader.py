@@ -1,7 +1,6 @@
 from datetime import date
 import Classes.Path as Path
 
-
 class PreprocessedCorpusReader:
 
     corpus = 0

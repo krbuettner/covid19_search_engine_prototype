@@ -6,7 +6,6 @@ from whoosh.qparser import QueryParser
 from whoosh.analysis import RegexTokenizer
 from whoosh.fields import Schema, TEXT, KEYWORD, ID, STORED
 
-# Efficiency and memory cost should be paid with extra attention.
 class MyIndexReader:
 
     searcher=[]
@@ -14,6 +13,13 @@ class MyIndexReader:
     def __init__(self, type):
         path_dir = Path.IndexTextDir
         self.searcher = index.open_dir(path_dir).searcher()
+        self.min_year, self.max_year = self.getDocDateRange()
+
+    def getDocDateRange(self):
+        years = []
+        for d in self.searcher.documents():
+            years.append(int(d["doc_date"][:4]))
+        return min(years), max(years)
 
     # Return the integer DocumentID of input string DocumentNo.
     def getDocId(self, docNo):
