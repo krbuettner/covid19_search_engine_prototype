@@ -28,7 +28,7 @@ class QueryRetrievalModel:
     # The returned results (retrieved documents) should be ranked by the score (from the most relevant to the least).
     # You will find our IndexingLucene.Myindexreader provides method: docLength().
     # Returned documents should be a list of Document.
-    def retrieveQuery(self, query, topN):
+    def retrieveQuery(self, query, topN, min_time=None):
 
         # Get query terms by splitting query content
         query_terms = query.queryContent.split()
@@ -68,17 +68,30 @@ class QueryRetrievalModel:
                 overall_query_probs[int(i)] = overall_query_probs[int(i)] * prob_word_in_doc_matrix[q][int(i)]
 
         # Get idx of topN docs in terms of P(Q|Md)
-        idx = np.argpartition(overall_query_probs, -topN)[-topN:]   
+        topval = self.total_doc_count
+        idx = np.argpartition(overall_query_probs, -topval)[-topval:]   
         idx = np.flip(idx[np.argsort(overall_query_probs[idx])])       # to make sure in correct order
 
         # Organize results into list of document objects
         docs = []
         for i in range(len(idx)):
-            doc_i = Document.Document()
-            doc_i.setDocId(idx[i])
-            doc_i.setDocNo(self.indexReader.getDocNo(idx[i]))
-            doc_i.setDocDate(self.indexReader.getDocDate(idx[i]))
-            doc_i.setScore(overall_query_probs[idx[i]])
-            docs.append(doc_i)
+            if min_time is None:
+                doc_i = Document.Document()
+                doc_i.setDocId(idx[i])
+                doc_i.setDocNo(self.indexReader.getDocNo(idx[i]))
+                doc_i.setDocDate(self.indexReader.getDocDate(idx[i]))
+                doc_i.setScore(overall_query_probs[idx[i]])
+                docs.append(doc_i)
+            else:
+                print(int(self.indexReader.getDocDate(idx[i])[:4]))
+                if int(self.indexReader.getDocDate(idx[i])[:4]) >= min_time:
+                    doc_i = Document.Document()
+                    doc_i.setDocId(idx[i])
+                    doc_i.setDocNo(self.indexReader.getDocNo(idx[i]))
+                    doc_i.setDocDate(self.indexReader.getDocDate(idx[i]))
+                    doc_i.setScore(overall_query_probs[idx[i]])
+                    docs.append(doc_i)
+            if len(docs) >= topN:
+                break
 
         return docs
