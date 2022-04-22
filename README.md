@@ -9,9 +9,10 @@ Since the COVID-19 pandemic's start, it has been difficult for people to identif
 
 ### Our project includes functionality for the following
 
-* Exact match search - Look for terms using Boolean operators (AND, OR, etc.)
-* General info search - Look for documents considered "relevant"
-* Search by date - Include last 1, 2, 3, 4, 5, 10, 20 years or all time
+* Exact match search - Identify scholarly articles including exact terms specified in search using Boolean operators (AND, OR, etc.)
+* General info search - Identify scholarly articles considered "relevant" to a user's query
+* Search by date - Include articles from last 1, 2, 3, 4, 5, 10, 20 years or all time
+* Document surrogate - Document surrogate provided as part of search
 * Document retrieval - Ability to open document within application 
 
 ### Areas for Improvement
