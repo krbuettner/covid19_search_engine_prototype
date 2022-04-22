@@ -2,13 +2,13 @@ import IndexingWithWhoosh.MyIndexReader as MyIndexReader
 import Search.QueryRetreivalModel as QueryRetreivalModel
 import Search.QueryRetreivalModelBoolean as QueryRetreivalModelBoolean
 import Classes.Query as Query
-from nltk.stem.porter import PorterStemmer
 import datetime
 import IndexingWithWhoosh.PreProcessedCorpusReader as PreprocessedCorpusReader
 import IndexingWithWhoosh.MyIndexWriter as MyIndexWriter
 import pickle
 from tkinter import *
 from PIL import Image,ImageTk
+from nltk.stem.porter import PorterStemmer
 import webbrowser
 import webview # pip install pywebview
 import pickle
@@ -87,12 +87,11 @@ def searchQuery(query, time, model_type):
     # create object to read through corpus 
     index_reader = MyIndexReader.MyIndexReader("trectext")
 
-    time_restricted_search = False
     if time == "Restrict Search to Timeframe" or time == "All Time":
-        time_restricted_search = False
         min_valid_time = index_reader.min_year
+    elif time == "Last year":
+        min_valid_time = index_reader.max_year - 1
     else:
-        time_restricted_search = True
         time_split = time.split()
         year = int(time_split[1])
         print(year)
@@ -146,7 +145,7 @@ def searchQuery(query, time, model_type):
     print(doc_dates)
 
     # Open ID to URL and create URL list for docs
-    with open('id_to_url.pkl', 'rb') as handle:
+    with open('data/id_to_url.pkl', 'rb') as handle:
         id_to_url = pickle.load(handle)
     docs = [] 
     for i in doc_list:
@@ -163,7 +162,7 @@ def showResults(docs, doc_list, query, doc_dates):
     # This gets doc_surrogates from this "orig" file
     # Took introduction paragraphs and stored them in file
     doc_surr_dict = dict()
-    with open('data/all_docs_orig.txt', 'r', newline='', encoding="utf8") as f:
+    with open('data/doc_surr.txt', 'r', newline='', encoding="utf8") as f:
         lines = f.readlines()
         counter = 0
         while counter < len(lines):
@@ -255,7 +254,7 @@ def run_gui():
     frame.place(anchor='center', relx=0.5, rely=0.25)
 
     # Create an object of tkinter ImageTk
-    img = Image.open("image.png")
+    img = Image.open("data/image.png")
     img = img.resize((200, 200))
     img = ImageTk.PhotoImage(img)
 
