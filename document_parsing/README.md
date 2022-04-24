@@ -1,4 +1,4 @@
-### Document Parsing
+# Document Parsing
 
 For this, a collection of documents are needed.
 
