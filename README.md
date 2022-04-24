@@ -1,4 +1,4 @@
-## COVID-19 Information Retrieval Search Engine
+## COVID-19 Information Retrieval Search Engine Prototype
 
 Contributors: Kyle Buettner, Cagri Gungor, Benjamin Truckenbrod
 
