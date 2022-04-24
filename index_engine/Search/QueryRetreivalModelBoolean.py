@@ -28,13 +28,14 @@ class QueryRetrievalModelBoolean:
         corrector = self.searcher.corrector("doc_content")
         q = self.query_parser.parse(query.getQueryContent())
 
-        corrected = self.searcher.correct_query(q, query.getQueryContent())
-        if corrected.query != q:
-            print("Did you mean:", corrected.string)
+        #corrected = self.searcher.correct_query(q, query.getQueryContent())
+       # if corrected.query != q:
+        #    print("Did you mean:", corrected.string)
 
-        query_input = self.query_parser.parse(corrected.string)
+        #query_input = self.query_parser.parse(q)
+        #print(query_input)
         search_results = self.searcher.search(
-            query_input, scored=False, sortedby="doc_date", reverse=True, limit=None)
+            q, scored=False, sortedby="doc_date", reverse=True, limit=None)
 
         return_docs = []
         print(search_results)
