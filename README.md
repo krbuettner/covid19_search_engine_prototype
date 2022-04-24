@@ -26,6 +26,6 @@ Since the COVID-19 pandemic's start, it has been difficult for people to identif
 * Python packages: Whoosh, Tkinter
 * Retrieval models: Boolean, query likelihood with Dirichlet smoothing 
 
-Project completed as part of Dr. Daqing He's Information Retreival and Storage course at the University of Pittsburgh
+Project completed as part of Dr. Daqing He's Information Retreival and Storage course at the University of Pittsburgh. Indexing code was built on code created during that course. 
 
 
