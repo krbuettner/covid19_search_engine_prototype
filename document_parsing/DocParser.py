@@ -1,6 +1,12 @@
 import os
 import json
 from nltk.stem.porter import PorterStemmer
+import pandas as pd
+
+ignore_clean_cont = False
+full_cont = True # If false will just obtain a "doc surrogate"
+out_file_name = 'all_docs.txt'
+doc_parse_loc = './random_document_parses_10000/'
 
 # This will be class for parsing the JSON file data 
 class DocParser:
@@ -14,7 +20,7 @@ class DocParser:
 	def get_title(self, data):
 		return data["metadata"]["title"]
 
-	def get_content(self, data, just_intros=True):
+	def get_content(self, data, just_intros=False):
 
 		# There are multiple sections such as 'metadata', 'abstract', 'body_text' - let's just start with body_text for simplicity
 		# Loop through each 'text' section, strip trailing and leading whitespace, then combine all strings at end to create content
@@ -59,7 +65,7 @@ class DocParser:
 	# e.g. Should we have abstract? should we perform stemming? lowercase? remove proper nouns?
 	# I think this will get edited a good bit 
 	# The output should be doc_id and content - need to map doc_ids to title 
-	def parse_doc(self, doc_name, ignore_clean=True):
+	def parse_doc(self, doc_name, ignore_clean=False, full_cont=False):
 
 		# Load JSON data for doc
 		with open(doc_name, 'r') as f:
@@ -73,7 +79,7 @@ class DocParser:
 		self.ids_to_title[doc_id] = title              							# Store info in master list
 		
 		# Get content, clean it, store it to doc id
-		content_uncleaned = self.get_content(data)
+		content_uncleaned = self.get_content(data, just_intros=not full_cont)
 		if ignore_clean:
 			content_cleaned = content_uncleaned
 		else:
@@ -85,20 +91,37 @@ class DocParser:
 
 		return [doc_id, content_cleaned]
 
+
+
 parser = DocParser()
 
 # Here is code to generate single doc file
-with open('all_docs_orig.txt', 'w') as all_file:
+count = 0
+print('Reading CORD-19 metadata for dates...')
+metadata_file = pd.read_csv('metadata.csv', low_memory=True)
+df = metadata_file
+l = os.listdir(doc_parse_loc)
+doc_id_to_date = dict()
+for i in range(len(l)):
+    l[i] = l[i].replace('.json', '')
+idx = df.loc[df['sha'].isin(l)] 
+for i, row in idx.iterrows():
+    if i > 0:
+        doc_id_to_date[str(row['sha'])] = row['publish_time']
+         
+with open(out_file_name, 'w') as all_file:
     counter = 0
-    for f in os.listdir('./random_document_parses_10000/'):
+    for f in os.listdir(doc_parse_loc):
         doc_name = f
-        content = parser.parse_doc('./random_document_parses_10000/' + str(doc_name))
-        all_file.write(f)
-        all_file.write('\n')
-        all_file.write(content[1])
-        all_file.write('\n')
-        #print(f)
-        #print(content)
-        print(counter)
-        counter = counter + 1
+        content = parser.parse_doc(doc_parse_loc + str(doc_name), ignore_clean=ignore_clean_cont, full_cont=full_cont)
+        if doc_name in doc_id_to_date.keys():
+            all_file.write(doc_name)
+            all_file.write('\n')
+            all_file.write(doc_id_to_date[f[:-5]])
+            all_file.write('\n')
+            all_file.write(content[1])
+            all_file.write('\n')
+            print(counter)
+            counter = counter + 1
+
 
