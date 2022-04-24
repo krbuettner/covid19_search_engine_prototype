@@ -114,7 +114,7 @@ with open(out_file_name, 'w') as all_file:
     for f in os.listdir(doc_parse_loc):
         doc_name = f
         content = parser.parse_doc(doc_parse_loc + str(doc_name), ignore_clean=ignore_clean_cont, full_cont=full_cont)
-        if doc_name in doc_id_to_date.keys():
+        if doc_name[:-5] in doc_id_to_date.keys():
             all_file.write(doc_name)
             all_file.write('\n')
             all_file.write(doc_id_to_date[f[:-5]])
