@@ -17,7 +17,7 @@ import tkinter
 # Global arguments to set for running program
 write_index = False
 num_exact_matches = 30
-num_ranked_matches = 30
+num_ranked_matches = 10
 dropdown_range = [1,2,3,4,5,10,20]
 
 ###################################################################################################################################
@@ -150,7 +150,14 @@ def searchQuery(query, time, model_type):
     docs = [] 
     for i in doc_list:
         if i in id_to_url.keys():
-            docs.append(id_to_url[i])
+            list_to_use = []
+            if len(id_to_url[i][0].split(';')) > 1:
+                list_to_use.append(id_to_url[i][0].split(';')[1][1:])
+                print(id_to_url[i][0].split(';')[1][1:])
+            else:
+                list_to_use.append(id_to_url[i][0])
+            list_to_use.append(id_to_url[i][1])
+            docs.append(list_to_use)
 
     # Show results based on docs retrieved
     showResults(docs, doc_list, orig_query, doc_dates)
